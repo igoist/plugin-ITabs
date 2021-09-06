@@ -5,7 +5,7 @@ import * as decode from './lib/decode';
 import * as extension from './lib/extension';
 import md5 from './lib/md5';
 
-const prefix = 'et-pin';
+const prefix = 'et-tabs';
 
 // const IAdBState = {
 //   ifDarkMode: false,

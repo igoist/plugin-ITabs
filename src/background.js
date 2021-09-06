@@ -1,3 +1,19 @@
+const getTabs = () => {
+  return new Promise((resolve) => {
+    chrome.tabs.query({}, (tabs) => {
+      resolve(tabs);
+    });
+  });
+};
+
+const getIconBlob = (url) => {
+  return new Promise(async (resolve) => {
+    let r = await fetch(url).then((res) => res.blob());
+
+    resolve(URL.createObjectURL(r));
+  });
+};
+
 const main = () => {
   // 异步情况下，这里不要加 async
   const onMessage = (request, sender, sendResponse) => {
@@ -8,46 +24,22 @@ const main = () => {
     if (request.to === 'IPin-bg') {
       switch (request.type) {
         // 传入 src 数组 & 返回 JSON.stringify 后的 base64 数组结果
-        case 'getImageData':
-          let imgSrcs = [];
-
-          try {
-            imgSrcs = JSON.parse(payload.taskArr);
-          } catch (e) {
-            imgSrcs = null;
-          }
-
-          if (!imgSrcs) return sendResponse({ error: 'Image data parse error' });
-
-          let result = [];
-
-          const blobToData = (blobData) => {
-            return new Promise((resolve) => {
-              let reader = new window.FileReader();
-
-              reader.readAsDataURL(blobData);
-              reader.onloadend = function () {
-                const base64data = reader.result;
-
-                resolve(base64data);
-              };
-            });
-          };
-
+        case 'getTabData':
           const handle = async () => {
-            for (let i = 0; i < imgSrcs.length; i++) {
-              let blobData = await fetch(imgSrcs[i]).then((res) => {
-                return res.blob();
-              });
+            const tabs = await getTabs();
 
-              // let url = URL.createObjectURL(blobData);
-              let r = await blobToData(blobData);
-              result.push(r);
-            }
+            console.log('should ', tabs);
 
-            // console.log('should ', result);
+            // tabs[0].favIconUrl;
+
+            // let taskArr = tabs.map((tab) => getIconBlob(tab.favIconUrl));
+
+            // let r = await Promise.all(taskArr);
+
+            // console.log('herer ', r);
+
             sendResponse({
-              result: JSON.stringify(result),
+              result: JSON.stringify(tabs),
             });
           };
 

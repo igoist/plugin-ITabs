@@ -12,7 +12,7 @@ const webpackConfig = [
   },
   {
     entry: {
-      IPin: [path.resolve(path.resolve(__dirname, '..'), path.resolve(srcPath, 'index.js'))],
+      ITabs: [path.resolve(path.resolve(__dirname, '..'), path.resolve(srcPath, 'index.js'))],
     },
   },
 ];
